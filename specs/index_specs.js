@@ -53,7 +53,7 @@ describe('xcodebuild', function () {
 
   })
 
-  it ('should add options to xcodebuild arguments', function () {
+  it ('should add options to xcodebuild arguments', function (done) {
 
     xcodebuild({
       configuration: 'Release',
@@ -85,7 +85,7 @@ describe('xcodebuild', function () {
       path: 'path'
     }, function (error) {
       expect(proc.spawn).to.have.been.calledWith('xcodebuild',
-        [ 'BUILD_DIR=path/release' ],
+        [ 'BUILD_DIR=path/build' ],
         { cwd: 'path' })
       done()
     })
