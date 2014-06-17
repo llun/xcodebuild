@@ -102,4 +102,23 @@ describe('xcodebuild', function () {
 
   })
 
+  it ('should build with action and parameters options', function (done) {
+
+    var build = xcodebuild('clean', {
+      path: 'path',
+      buildDir: 'release',
+      scheme: 'Test',
+      configuration: 'Configuration'
+    }, function (error) {
+      expect(proc.spawn).to.have.been.calledWith('xcodebuild',
+        [ 'clean', '-scheme', 'Test', '-configuration', 'Configuration',
+          'BUILD_DIR=path/release' ],
+        { cwd: 'path' })
+      done()
+    })
+
+    build.emit('close')
+
+  })
+
 })
