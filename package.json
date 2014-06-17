@@ -13,7 +13,8 @@
   },
   "license": "MIT",
   "dependencies": {
-    "lodash": "^2.4.1"
+    "lodash": "^2.4.1",
+    "through2": "^0.5.1"
   },
   "devDependencies": {
     "chai": "^1.9.1",
