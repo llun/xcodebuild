@@ -1,6 +1,6 @@
 {
   "name": "xcodebuild",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Build Xcode project from javascript",
   "main": "lib/index.js",
   "keywords": [
@@ -12,6 +12,10 @@
     "email": "null@llun.in.th"
   },
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/llun/xcodebuild.git"
+  },
   "dependencies": {
     "lodash": "^2.4.1",
     "through2": "^0.5.1"
