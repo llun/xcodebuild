@@ -6,15 +6,18 @@ describe('xcodebuild', function () {
     , proc = require('child_process')
     , xcodebuild = require('../lib')
     , cwd = process.cwd()
+    , through2 = require('through2')
+    , events = require('events')
 
   chai.use(require('sinon-chai'))
 
   beforeEach(function () {
     sinon.stub(proc, 'spawn')
-    proc.spawn.returns({
-      on: sinon.stub(),
-      once: sinon.stub()
-    })
+
+    var mock = new events.EventEmitter
+    mock.stdin = mock.stdout = mock.stderr = sinon.stub(through2())
+
+    proc.spawn.returns(mock)
 
   })
 
@@ -23,7 +26,7 @@ describe('xcodebuild', function () {
   })
 
   it ('should pass current directory as xcodebuild path', function (done) {
-    xcodebuild(function (error) {
+    var build = xcodebuild(function (error) {
       expect(proc.spawn).to.have.been.calledWith('xcodebuild',
         [ 'BUILD_DIR=' + cwd + '/build' ],
         {
@@ -31,31 +34,35 @@ describe('xcodebuild', function () {
         })
       done()
     })
+    build.emit('close')
+
   })
 
   it ('should put clean action in spawn argument', function (done) {
 
-    xcodebuild('clean', function (error) {
+    var build = xcodebuild('clean', function (error) {
       expect(proc.spawn).to.have.been.calledWith('xcodebuild',
         [ 'clean', 'BUILD_DIR=' + cwd + '/build' ])
       done()
     })
+    build.emit('close')
 
   })
 
   it ('should put -showsdks when action is showsdks', function (done) {
 
-    xcodebuild('showsdks', function (error) {
+    var build = xcodebuild('showsdks', function (error) {
       expect(proc.spawn).to.have.been.calledWith('xcodebuild',
         [ '-showsdks', 'BUILD_DIR=' + cwd + '/build' ])
       done()
     })
+    build.emit('close')
 
   })
 
   it ('should add options to xcodebuild arguments', function (done) {
 
-    xcodebuild({
+    var build = xcodebuild({
       configuration: 'Release',
       scheme: 'Project'
     }, function (error) {
@@ -64,24 +71,26 @@ describe('xcodebuild', function () {
           'BUILD_DIR=' + cwd + '/build' ])
       done()
     })
+    build.emit('close')
 
   })
 
   it ('should change build dir to new path', function (done) {
 
-    xcodebuild({
+    var build = xcodebuild({
       buildDir: 'release'
     }, function (error) {
       expect(proc.spawn).to.have.been.calledWith('xcodebuild',
         [ 'BUILD_DIR=' + cwd + '/release' ])
       done()
     })
+    build.emit('close')
 
   })
 
   it ('should change cwd to path pass in options', function (done) {
 
-    xcodebuild({
+    var build = xcodebuild({
       path: 'path'
     }, function (error) {
       expect(proc.spawn).to.have.been.calledWith('xcodebuild',
@@ -89,6 +98,7 @@ describe('xcodebuild', function () {
         { cwd: 'path' })
       done()
     })
+    build.emit('close')
 
   })
 
